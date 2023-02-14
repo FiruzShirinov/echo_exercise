@@ -22,7 +22,9 @@ class Bidding extends Model
         'debtor',
         'subject',
         'status',
-        'started_at'
+        'started_at',
+        'external_id',
+        'details'
     ];
 
     public function startedAt(): Attribute

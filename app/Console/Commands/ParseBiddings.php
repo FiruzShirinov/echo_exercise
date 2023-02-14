@@ -40,7 +40,8 @@ class ParseBiddings extends Command
             'debtor',
             'subject',
             'status',
-            'started_at'
+            'started_at',
+            'external_id'
         ];
 
         $exchangeUrl = 'https://etp.kartoteka.ru/index.html';
@@ -57,10 +58,12 @@ class ParseBiddings extends Command
             $rows = $xpath->query('//table[@class="data"]/tr');
 
             foreach ($rows as $row) {
+                $onClick = $row->getAttribute('onclick');
                 $cells = $xpath->query('td[@colspan="1"]', $row);
                 $cellData = [];
                 $colIndex = 0;
                 if ($cells->length > 0) {
+                    $externalId = explode('id=', substr($onClick, 0, strpos($onClick,"', '")))[1];
                     foreach ($cells as $cell) {
                         $subCells = $xpath->query('div', $cell);
                         if ($subCells->length > 0) {
@@ -74,6 +77,7 @@ class ParseBiddings extends Command
                         }
                         $colIndex++;
                     }
+                    $cellData[$cols[$colIndex]] = $externalId;
                     $tableData[] = $cellData;
                 }
             }
@@ -120,6 +124,7 @@ class ParseBiddings extends Command
                         'debtor' => $bidding['debtor'],
                         'subject' => $bidding['subject'],
                         'started_at' => Carbon::parse($bidding['started_at'])->format('Y-m-d H:i:s'),
+                        'external_id' => $bidding['external_id'],
                     ]
                 );
                 $bar->advance();

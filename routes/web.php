@@ -14,9 +14,8 @@ use App\Http\Controllers\HomeController;
 |
 */
 
-Route::get('/', [HomeController::class, 'index'])->name('home');
-
 Route::controller(HomeController::class)->group(function () {
     Route::get('/', 'index')->name('home');
     Route::get('/refresh', 'refresh')->name('refresh');
+    Route::get('/{bidding}', 'show')->name('show');
 });
